@@ -1,34 +1,24 @@
-const express = require('express');
-const User = require('../models/User');
-const router = express.Router();
+const express = require("express");
+const User = require("../models/User");
+const router = require('express-promise-router')();
 
-router.get('/', async (req, res) => {
-        const users = await User.find();
-        res.json(users);
-})
+const UserController = require('../controllers/User')
 
-router.get('/:id', async (req, res) => {
-    try {
-        const user = await User.findById(req.params.id);
-        res.json(user);
-    } catch (err) {s
-        res.json({message: err})
-    }
-})
+//ALL
+router.route('/')
+    .get(UserController.getAll)
+    .post(UserController.createUser);
 
-router.post('/', async (req, res) => {
-    const user = new User({
-        name: req.body.name,
-        email: req.body.email,
-        passwordHash: req.body.passwordHash
-    });
+//INDIVIDUAL
+router.route('/:id')
+    .get(UserController.getUser)
+    .put(UserController.updateUser)
+    .patch(UserController.updateUser)
+    .delete(UserController.deleteUser)
 
-    try {
-        const savedUser = await user.save();
-        res.json(savedUser);
-    } catch (err) {
-        res.json({message: err})
-    }
-})
+//AUTH
+router.route('/login')
+    .post(UserController.authenticate)
+
 
 module.exports = router;
