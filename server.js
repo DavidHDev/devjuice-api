@@ -12,9 +12,14 @@ const usersRoute = require('./routes/users');
 app.use('/users', usersRoute);
 
 
+app.get('/', (req, res) => {
+  res.send('Connected and up')
+})
+
+
 //Connect to DB
 mongoose.connect(
-  process.env.DB_CONNECTION,
+  process.env.MONGODB_URI,
   { useUnifiedTopology: true , useNewUrlParser: true},
   () => {
     console.log("Connected");
