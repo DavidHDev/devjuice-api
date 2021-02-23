@@ -8,7 +8,7 @@ module.exports = {
         await User.findOne({email: req.body.email}, (err, userInfo) => {
             try {
                 if (bcrypt.compareSync(req.body.password, userInfo.passwordHash)) {
-                    const token = jwt.sign({id: userInfo._id, address: userInfo.email}, process.env.JWT_KEY, {expiresIn: '2h'});
+                    const token = jwt.sign({id: userInfo._id, email: userInfo.email, username: userInfo.userName}, process.env.JWT_KEY, {expiresIn: '2h'});
                     res.json({token:token});
                 } else res.status(404).json({status:"error", message: "Invalid email/password!"});
             } catch (err) {
@@ -25,7 +25,8 @@ module.exports = {
     createUser: async (req, res, next) => {
         console.log(req.body)
         const newUser = new User(req.body);
-        const user = await newUser.save();
+        const user = await newUser.save()
+            .catch(() => {res.status(400).json({emailError: 'Email is invalid/already exists.'})});
         res.status(201).json(user);
     },
 
