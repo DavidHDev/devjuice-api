@@ -44,6 +44,13 @@ router.route("/register").post(UserController.createUser);
 
 //JOBS
 router.route("/jobs")
-  .get(Job.getAll);
+  .get(Job.getAll)
+  .post(Job.saveJob)
+
+router.route("/jobs/:id")
+  .get(Job.getOne);
+
+router.route("/jobs/users/:userId")
+  .get(Job.getByUserId)
 
 module.exports = router;
